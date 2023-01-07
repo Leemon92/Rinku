@@ -1,0 +1,149 @@
+﻿@model Rinku.Models.Movements
+
+@{
+    ViewBag.Title = "Movements";
+    ViewBag.Placeholder = "~ EILH ~";
+}
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<div class="row w-100 h-100">
+    <div class="col-md-12">
+        @using (Html.BeginForm("CreateEmploye", "Home", FormMethod.Post, new { @autocomplete = "off", @id = "frmEmployes" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+            @Html.Hidden("hdnCreateEmployeeURL", @Url.Action("CreateEmploye", "Home"))
+            @Html.Hidden("hdnCreateMovementURL", @Url.Action("CreateMovement", "Home"))
+            @Html.Hidden("hdnGetEmployeeURL", @Url.Action("GetEmploye", "Home"))
+            @Html.Hidden("hdnGetEmployeeIDURL", @Url.Action("GetEmployeID", "Home"))
+
+            <div class="col-9 no-padding no-margin">
+                <h4 class="text-primary font-weight-bold justify-content-around" style="vertical-align:central; align-items:center; text-align:justify">Movements</h4>
+            </div>
+
+            <div id="divContent" class="container-fluid border rounded w-100 h-100">
+                <br />
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-3 d-flex">
+                            <div class="col-sm p-2" style="text-align:right">
+                                <label>Number</label>
+                            </div>
+                            <div class="col-sm">
+                                <select class="form-select" aria-label="Default select example" id="cmbxEmployeeNumber" name="cmbxEmployeeNumber" onchange="LoadNumberInfo(this);">
+                                    <option selected value="0"><< Select >></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 d-flex">
+                            <div class="col-sm-3 p-2" style="text-align:right">
+                                <label>Name</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="txtEmployeName" readonly placeholder="---">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 d-flex">
+                            <div class="col-sm-3 p-2" style="text-align:right">
+                                <label>Rol</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="txtEmployeRol" readonly placeholder="---">
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-3 d-flex">
+                            <div class="col-sm-3 p-2" style="text-align:right">
+                                <label>Month</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <select class="form-select" aria-label="Default select example" id="cmbxMonth" name="cmbxMonth">
+                                    <option selected value="0"><< Select >></option>
+                                    <option value="1">Enero</option>
+                                    <option value="2">Febrero</option>
+                                    <option value="3">Marzo</option>
+                                    <option value="4">Abril</option>
+                                    <option value="5">Mayo</option>
+                                    <option value="6">Junio</option>
+                                    <option value="7">Julio</option>
+                                    <option value="8">Agosto</option>
+                                    <option value="9">Septiembre</option>
+                                    <option value="10">Octubre</option>
+                                    <option value="11">Noviembre</option>
+                                    <option value="12">Diciembre</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 d-flex">
+                            <div class="col-sm-4 p-2" style="text-align:right">
+                                <label>Shipp. Qty</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" id="txtQty" placeholder="###" max="999" min="1">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 d-flex">
+                            <div class="row w-100 d-flex">
+                                <div class="col-sm-6 d-flex">
+                                    <br />
+                                    <button type="button" id="btnSave" class="btn btn-md btn-primary" style="width:100%; height:45px;" onclick="Save_New_Movement();">
+                                        <i class="fa fa-floppy-o"></i>&nbsp;Save
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <!-- Grid -->
+                <div id="divGrid" class="row">
+                    <div class="tab-content top-space w-100 h-100 ">
+                        <div id="tblEmployes" class="top-sm-space tabulator-small"></div>
+                    </div>
+                </div>
+                <br />
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="modalMessage" class="modal fade" role="dialog" aria-labelledby="modalMessageLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary" id="modalMessageLabel">
+                    <span class="fas fa-bell"></span>&nbsp;Notification
+                </h5>
+            </div>
+            <div class="modal-body">
+                <p class="modal-title text-secondary font-weight-bold" style="text-align:justify;">
+                </p>
+            </div>
+            <div class="modal-footer">
+                <div id="divbtnAccionsFooter" class="row d-flex flex-row-reverse">
+                    <button type="button" id="btnOk" class="btn btn-md btn-primary" style="width:110px;">
+                        <i class="fa fa-check"></i>&nbsp;Ok
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jQueryLib")
+    @Scripts.Render("~/bundles/ajax-helpers")
+    @Scripts.Render("~/bundles/movements")
+}

@@ -1,0 +1,116 @@
+﻿@model Rinku.Models.Employe
+
+@{
+    ViewBag.Title = "Employes";
+    ViewBag.Placeholder = "~ EILH ~";
+}
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<div class="row w-100 h-100">
+    <div class="col-md-12">
+        @using (Html.BeginForm("CreateEmploye", "Home", FormMethod.Post, new { @autocomplete = "off", @id = "frmEmployes" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+            @Html.Hidden("hdnCreateEmployeeURL", @Url.Action("CreateEmploye", "Home"))
+            @Html.Hidden("hdnGetEmployeeURL", @Url.Action("GetEmploye", "Home"))
+
+            <div class="col-9 no-padding no-margin">
+                <h4 class="text-primary font-weight-bold justify-content-around" style="vertical-align:central; align-items:center; text-align:justify">Employes</h4>
+            </div>
+
+            <div id="divContent" class="container-fluid border rounded w-100 h-100">
+                <br />
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-3 d-flex">
+                            <div class="col-sm p-2" style="text-align:right">
+                                <label>Number</label>
+                            </div>
+                            <div class="col-sm">
+                                <input type="number" class="form-control" id="txtEmployeNumber" placeholder="###" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 d-flex">
+                            <div class="col-sm-3 p-2" style="text-align:right">
+                                <label>Name</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="txtEmployeName" placeholder="---">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2 d-flex">
+                            <div class="col-sm-3 p-2" style="text-align:right">
+                                <label>Rol</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <select class="form-select" aria-label="Default select example" id="cmbxRol" name="cmbxRol">
+                                    <option selected><< Select >></option>
+                                    <option value="1">Chofer</option>
+                                    <option value="2">Cargador</option>
+                                    <option value="3">Auxiliar</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2 d-flex">
+                            <div class="row w-100 d-flex">
+                                <div class="col-sm-6 d-flex">
+                                    <br />
+                                    <button type="button" id="btnSave" class="btn btn-md btn-primary" style="width:100%;" onclick="Save_New_Employe();">
+                                        <i class="fa fa-floppy-o"></i>&nbsp;Save
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <!-- Grid -->
+                <div id="divGrid" class="row">
+                    <div class="tab-content top-space w-100 h-100 ">
+                        <div id="tblEmployes" class="top-sm-space tabulator-small"></div>
+                    </div>
+                </div>
+                <br />
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="modalMessage" class="modal fade" role="dialog" aria-labelledby="modalMessageLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary" id="modalMessageLabel">
+                    <span class="fas fa-bell"></span>&nbsp;Notification
+                </h5>
+            </div>
+            <div class="modal-body">
+                <p class="modal-title text-secondary font-weight-bold" style="text-align:justify;">
+                </p>
+            </div>
+            <div class="modal-footer">
+                <div id="divbtnAccionsFooter" class="row d-flex flex-row-reverse">
+                    <button type="button" id="btnOk" class="btn btn-md btn-primary" style="width:110px;">
+                        <i class="fa fa-check"></i>&nbsp;Ok
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jQueryLib")
+    @Scripts.Render("~/bundles/ajax-helpers")
+    @Scripts.Render("~/bundles/employee")
+}
+
