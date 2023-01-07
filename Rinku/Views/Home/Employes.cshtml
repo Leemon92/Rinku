@@ -15,17 +15,18 @@
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(true)
             @Html.Hidden("hdnCreateEmployeeURL", @Url.Action("CreateEmploye", "Home"))
+            @Html.Hidden("hdnUpdEmployeeURL", @Url.Action("CreateEmploye", "Home"))
             @Html.Hidden("hdnGetEmployeeURL", @Url.Action("GetEmploye", "Home"))
 
             <div class="col-9 no-padding no-margin">
                 <h4 class="text-primary font-weight-bold justify-content-around" style="vertical-align:central; align-items:center; text-align:justify">Employes</h4>
             </div>
 
-            <div id="divContent" class="container-fluid border rounded w-100 h-100">
+            <div id="divContent" class="container-fluid  border rounded w-100 h-100">
                 <br />
                 <div class="form-group">
                     <div class="row">
-                        <div class="col-sm-3 d-flex">
+                        <div class="col-sm-3 d-flex p-0 m-0">
                             <div class="col-sm p-2" style="text-align:right">
                                 <label>Number</label>
                             </div>
@@ -34,7 +35,7 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-3 d-flex">
+                        <div class="col-sm-3 d-flex  p-0 m-0">
                             <div class="col-sm-3 p-2" style="text-align:right">
                                 <label>Name</label>
                             </div>
@@ -43,13 +44,13 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-2 d-flex">
+                        <div class="col-sm-2 d-flex p-0 m-0">
                             <div class="col-sm-3 p-2" style="text-align:right">
                                 <label>Rol</label>
                             </div>
                             <div class="col-sm-9">
                                 <select class="form-select" aria-label="Default select example" id="cmbxRol" name="cmbxRol">
-                                    <option selected><< Select >></option>
+                                    <option selected value="0"><< Select >></option>
                                     <option value="1">Chofer</option>
                                     <option value="2">Cargador</option>
                                     <option value="3">Auxiliar</option>
@@ -57,12 +58,27 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-2 d-flex">
+                        <div class="col-sm d-flex  p-0 m-0">
+                            <div class="col-sm m-1" style="text-align:right">
+                                <label>Is Active?</label>
+                            </div>
+                            <div class="col-sm m-1">
+                                <input type="checkbox" id="chbxActive" name="chbxActive"> 
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2 d-flex  p-0 m-0">
                             <div class="row w-100 d-flex">
                                 <div class="col-sm-6 d-flex">
                                     <br />
                                     <button type="button" id="btnSave" class="btn btn-md btn-primary" style="width:100%;" onclick="Save_New_Employe();">
                                         <i class="fa fa-floppy-o"></i>&nbsp;Save
+                                    </button>
+                                </div>
+                                <div class="col-sm-6 d-flex">
+                                    <br />
+                                    <button type="button" id="btnClean" class="btn btn-md btn-primary" style="width:100%;" onclick="Cleaninfo();">
+                                        <i class="fa fa-floppy-o"></i>&nbsp;New
                                     </button>
                                 </div>
 
