@@ -54,7 +54,7 @@ namespace Rinku.Database
                 sqlCon.Close();
                 return "{ \"Exception\":" +  ex.Message.ToString() + "}";
             }
-            return serializer.Serialize(rows); ;
+            return serializer.Serialize(rows);
         }
 
         public string UpdtEmploye(Employe model)
@@ -103,9 +103,11 @@ namespace Rinku.Database
             return serializer.Serialize(rows);
         }
 
-        public string CreateMovement(Movements model)
+        public string SaveMovement(Movements model)
         {
-            string result = string.Empty;
+            List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+            Dictionary<string, object> row;
+            DataTable dtResult = new DataTable();
             SqlConnection sqlCon = new SqlConnection(_dbCon);
             SqlCommand sqlCmd = new SqlCommand();
 
@@ -116,27 +118,33 @@ namespace Rinku.Database
 
                 sqlCmd.Connection = sqlCon;
                 sqlCmd.CommandType = System.Data.CommandType.StoredProcedure;
-                sqlCmd.CommandText = "sp_CreateMovement";
+                sqlCmd.CommandText = "sp_SaveMovement";
                 sqlCmd.Parameters.Add("@pIDEmployee", System.Data.SqlDbType.Int);
                 sqlCmd.Parameters.Add("@pIDMonth", System.Data.SqlDbType.Int);
                 sqlCmd.Parameters.Add("@pQtyShip", System.Data.SqlDbType.Decimal);
                 sqlCmd.Parameters["@pIDEmployee"].Value = model.IDEmploye;
                 sqlCmd.Parameters["@pIDMonth"].Value = model.IDMonth;
                 sqlCmd.Parameters["@pQtyShip"].Value = model.QtyShip;
-
                 sqlCon.Open();
-
-                int moveNo = Convert.ToInt32(sqlCmd.ExecuteScalar());
-
+                dtResult.Load(sqlCmd.ExecuteReader());
                 sqlCon.Close();
-                result = (moveNo > 0 ? "OK" : string.Empty);
+
+                foreach (DataRow dr in dtResult.Rows)
+                {
+                    row = new Dictionary<string, object>();
+                    foreach (DataColumn col in dtResult.Columns)
+                    {
+                        row.Add(col.ColumnName, dr[col]);
+                    }
+                    rows.Add(row);
+                }
             }
             catch (Exception ex)
             {
                 sqlCon.Close();
-                result = ex.Message.ToString();
+                return "{ \"Exception\":" + ex.Message.ToString() + "}";
             }
-            return result;
+            return serializer.Serialize(rows);
         }
 
         public string GetEmploye()
@@ -194,6 +202,47 @@ namespace Rinku.Database
                 sqlCmd.Connection = sqlCon;
                 sqlCmd.CommandType = System.Data.CommandType.StoredProcedure;
                 sqlCmd.CommandText = "sp_GetEmployeeID";
+                sqlCmd.Parameters.Add("@IDEmployee", System.Data.SqlDbType.Int);
+                sqlCmd.Parameters["@IDEmployee"].Value = EmployeId;
+                sqlCon.Open();
+                dtResult.Load(sqlCmd.ExecuteReader());
+                sqlCon.Close();
+
+                foreach (DataRow dr in dtResult.Rows)
+                {
+                    row = new Dictionary<string, object>();
+                    foreach (DataColumn col in dtResult.Columns)
+                    {
+                        row.Add(col.ColumnName, dr[col]);
+                    }
+                    rows.Add(row);
+                }
+            }
+            catch (Exception ex)
+            {
+                sqlCon.Close();
+                return string.Empty;
+            }
+            return serializer.Serialize(rows);
+        }
+
+        public string GetMovmentsID(int EmployeId)
+        {
+            List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+            Dictionary<string, object> row;
+
+            DataTable dtResult = new DataTable();
+            SqlConnection sqlCon = new SqlConnection(_dbCon);
+            SqlCommand sqlCmd = new SqlCommand();
+
+            try
+            {
+                if (sqlCmd.Parameters.Count > 0)
+                    sqlCmd.Parameters.Clear();
+
+                sqlCmd.Connection = sqlCon;
+                sqlCmd.CommandType = System.Data.CommandType.StoredProcedure;
+                sqlCmd.CommandText = "sp_GetMovementID";
                 sqlCmd.Parameters.Add("@IDEmployee", System.Data.SqlDbType.Int);
                 sqlCmd.Parameters["@IDEmployee"].Value = EmployeId;
                 sqlCon.Open();

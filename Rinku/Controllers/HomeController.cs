@@ -93,22 +93,53 @@ namespace Rinku.Controllers
                 return Json(new { Result = "ERROR", Msg = "Employe_Model_IsNullOrEmpty_Or_Invalid", modelStateIsValid = false });
         }
 
-        //POST: Home/CreateMovement
+        //POST: Home/SaveMovement
         [HttpPost]
-        [ActionName("CreateMovement")]
-        public JsonResult CreateMovement(Movements model)
+        [ActionName("SaveMovement")]
+        public JsonResult SaveMovement(Movements model)
         {
-            if (model.IDEmploye > 0)
+            if (ModelState.IsValid)
             {
-                var result = _dbCon.CreateMovement(model);
+                var result = _dbCon.SaveMovement(model);
+                JObject json = JObject.Parse(result.Replace("[", "").Replace("]", ""));
 
-                if (result.Trim().ToUpper() == "OK")
-                    return Json(new { Result = "Success", Msg = "Movement was register.", modelStateIsValid = true });
+                if (json.Count > 0)
+                {
+                    foreach (var key in json.Properties())
+                    {
+                        if (key.Name == "Result")
+                        {
+                            try
+                            {
+                                int operationResult = Convert.ToInt32(key.Value.ToString());
+
+                                switch (operationResult)
+                                {
+                                    case 0:
+                                        return Json(new { Result = "No_Result", Msg = ("The information can't be registered."), modelStateIsValid = true });
+                                    case -501:
+                                        return Json(new { Result = "Success", Msg = ("The information was updated successfully."), modelStateIsValid = true });
+                                    default:
+                                        return Json(new { Result = "Success", Msg = ("The delivery quantity was created succesfully."), modelStateIsValid = true });
+                                }
+                            }
+                            catch (Exception x)
+                            {
+                                return Json(new { Result = "DB_Error", Msg = key.Value.ToString(), modelStateIsValid = true });
+                            }
+                        }
+                        else if (key.Name == "Exception")
+                        {
+                            return Json(new { Result = "Exception", Msg = key.Value.ToString(), modelStateIsValid = true });
+                        }
+                    }
+                    return Json(new { Result = "", Msg = "", modelStateIsValid = true });
+                }
                 else
-                    return Json(new { Result = "ERROR", Msg = "The Movement couldn't register.", modelStateIsValid = false });
+                    return Json(new { Result = "No_Result", Msg = ("The information can't be created. " + result), modelStateIsValid = true });
             }
             else
-                return Json(new { Result = "ERROR", Msg = "Movement_Model_IsNullOrEmpty", modelStateIsValid = false });
+                return Json(new { Result = "ERROR", Msg = "Movement_Model_IsNullOrEmpty_Or_Invalid", modelStateIsValid = false });
         }
 
         //POST: Home/UpdEmploye
@@ -176,6 +207,14 @@ namespace Rinku.Controllers
         public JsonResult GetEmployeID(Employe model)
         {
             return Json(_dbCon.GetEmployeID(Convert.ToInt32(model.Number)), JsonRequestBehavior.AllowGet);
+        }
+
+        //GET: Home/GetMovements
+        [HttpGet]
+        [ActionName("GetMovements")]
+        public JsonResult GetMovements(Movements model)
+        {
+            return Json(_dbCon.GetMovmentsID(Convert.ToInt32(model.IDEmploye)), JsonRequestBehavior.AllowGet);
         }
         #endregion
     }

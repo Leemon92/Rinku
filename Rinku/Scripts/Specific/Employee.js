@@ -1,21 +1,27 @@
-﻿var EmployeeTable = null;
+﻿var allow2Reload = false;
+var EmployeeTable = null;
 
 $(document).ready(function () {
     EmployeeActions.InitTable(null);
 
     $("#btnSave").click(function () {
         try {
+            allow2Reload = false;
             $("#modalMessage p").html('');
             $("#modalMessage").modal("hide");
             var idRolSelected = $("#cmbxRol").val()
 
             if (String($("#txtEmployeName").val()).trim() == '' || String($("#txtEmployeName").val()).trim() == 'undefined') {
-                alert("Please, type employee name");
+                $("#modalMessage p").html('<br><p class="text-primary">Please, type employee name.</p><br>');
+                $("#modalMessage").modal({ backdrop: "static", keyboard: false });
+                $("#modalMessage").modal("show");
                 return;
             }
 
             if (Number(idRolSelected) <= 0) {
-                alert("Please, select a rol");
+                $("#modalMessage p").html('<br><p class="text-primary">Please, select a rol.</p><br>');
+                $("#modalMessage").modal({ backdrop: "static", keyboard: false });
+                $("#modalMessage").modal("show");
                 return;
             }
 
@@ -35,10 +41,11 @@ $(document).ready(function () {
                 ajaxFormHelper(url, "POST", data, null, false)
                     .done(function (result) {
                         if (String(result.Result).trim() == "Success") {
-                            $("#modalMessage p").html('<br><p style="color:green">' + String(result.Msg) + '.</p><br>');
+                            $("#modalMessage p").html('<br><p class="text-success">' + String(result.Msg) + '.</p><br>');
+                            allow2Reload = true;
                         }
                         else {
-                            $("#modalMessage p").html('<br><p style="color:red">' + String(result.Msg) + '. </p><br>');
+                            $("#modalMessage p").html('<br><p class="text-danger">' + String(result.Msg) + '. </p><br>');
                         }                        
                         $("#modalMessage").modal({ backdrop: "static", keyboard: false });
                         $("#modalMessage").modal("show");
@@ -48,10 +55,10 @@ $(document).ready(function () {
                 return false;
         }
         catch (issue) {
-            $("#modalMessage p").html('<br><p style="color:red">' + String(issue) + '. </p><br>');
+            $("#modalMessage p").html('<br><p class="text-danger">' + String(issue) + '. </p><br>');
             $("#modalMessage").modal({ backdrop: "static", keyboard: false });
             $("#modalMessage").modal("show");
-            console.log("issue .onEmployeJS_Save_New_Employe=" + issue);
+            console.log("issue .onEmployeJS_Save_Employe=" + issue);
         }
     });
 
@@ -65,7 +72,8 @@ $(document).ready(function () {
     $("#btnOk").click(function () {
         $("#modalMessage p").html('');
         $("#modalMessage").modal("hide");
-        document.location.reload();
+
+        if (allow2Reload === true) { document.location.reload(); }
     });
 });
 
@@ -94,7 +102,6 @@ var EmployeeActions = (function () {
             pagination: false,
             selectable: true,
             placeholder: "No Data Not Found",
-            invalidOptionWarnings: false,
             columns: columns,
         });
 

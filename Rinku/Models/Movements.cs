@@ -11,7 +11,7 @@ namespace Rinku.Models
     {
         public int IDEmploye { get; set; }
         public int IDMonth { get; set; }
-        public decimal QtyShip { get; set; }
+        public int QtyShip { get; set; }
         public Employe Employe { get; set; }
     }
 

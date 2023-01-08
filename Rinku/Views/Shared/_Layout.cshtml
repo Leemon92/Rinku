@@ -34,6 +34,18 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jQueryLib")
     @Scripts.Render("~/bundles/bootstrap")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".mr-auto .nav-item").bind("click", function (event) {
+                event.preventDefault();
+                var clickedItem = $(this);
+                $(".mr-auto .nav-item").each(function () {
+                    $(this).removeClass("active");
+                });
+                clickedItem.addClass("active");
+            });
+        });
+    </script>
     @RenderSection("scripts", required: false)
 </head>
 <body style="margin:0; padding:0; overflow:hidden">
