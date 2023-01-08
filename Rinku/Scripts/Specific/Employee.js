@@ -3,6 +3,65 @@
 $(document).ready(function () {
     EmployeeActions.InitTable(null);
 
+    $("#btnSave").click(function () {
+        try {
+            $("#modalMessage p").html('');
+            $("#modalMessage").modal("hide");
+            var idRolSelected = $("#cmbxRol").val()
+
+            if (String($("#txtEmployeName").val()).trim() == '' || String($("#txtEmployeName").val()).trim() == 'undefined') {
+                alert("Please, type employee name");
+                return;
+            }
+
+            if (Number(idRolSelected) <= 0) {
+                alert("Please, select a rol");
+                return;
+            }
+
+            if (confirm("Are you sure to save?")) {
+                var url = $("#hdnUpdEmployeeURL").val();
+
+                if (String($("#txtEmployeNumber").val()).trim() == '' || String($("#txtEmployeNumber").val()).trim().toLowerCase() == 'undefined') {
+                    url = $("#hdnCreateEmployeeURL").val();
+                }
+
+                var data = {};
+                data["Number"] = Number($("#txtEmployeNumber").val());
+                data["idRol"] = Number(idRolSelected);
+                data["Name"] = String($("#txtEmployeName").val()).trim();
+                data["Active"] = (document.getElementById('chbxActive').checked ? 1 : 0);
+
+                ajaxFormHelper(url, "POST", data, null, false)
+                    .done(function (result) {
+                        if (String(result.Result).trim() == "Success") {
+                            $("#modalMessage p").html('<br><p style="color:green">' + String(result.Msg) + '.</p><br>');
+                        }
+                        else {
+                            $("#modalMessage p").html('<br><p style="color:red">' + String(result.Msg) + '. </p><br>');
+                        }                        
+                        $("#modalMessage").modal({ backdrop: "static", keyboard: false });
+                        $("#modalMessage").modal("show");
+                    });
+            }
+            else
+                return false;
+        }
+        catch (issue) {
+            $("#modalMessage p").html('<br><p style="color:red">' + String(issue) + '. </p><br>');
+            $("#modalMessage").modal({ backdrop: "static", keyboard: false });
+            $("#modalMessage").modal("show");
+            console.log("issue .onEmployeJS_Save_New_Employe=" + issue);
+        }
+    });
+
+    $("#btnClean").click(function () {
+        $("#txtEmployeNumber").val('');
+        $("#txtEmployeName").val('');
+        $("#cmbxRol").val(0)
+        document.getElementById('chbxActive').checked = false;
+    });
+
     $("#btnOk").click(function () {
         $("#modalMessage p").html('');
         $("#modalMessage").modal("hide");
@@ -56,92 +115,3 @@ var EmployeeActions = (function () {
         InitTable: SetTable,
     };
 }());
-
-function Save_New_Employe() {
-    try {
-        $("#modalMessage p").html('');
-        $("#modalMessage").modal("hide");
-
-        if (String($("#txtEmployeName").val()).trim() == '' || String($("#txtEmployeName").val()).trim() == 'undefined') {
-            alert("Please, type employee name");
-            return;
-        }
-
-        if (confirm("Are you sure to save?")) {
-            var idRolSelected = $("#cmbxRol").val()
-
-            var url = $("#hdnCreateEmployeeURL").val();
-            var data = {};
-            data["idRol"] = Number(idRolSelected);
-            data["Name"] = String($("#txtEmployeName").val()).trim();
-
-            //CREATE EMPLOYEE
-            ajaxFormHelper(url, "POST", data, null, false)
-                .done(function (result) {
-                    $("#modalMessage p").html('<br>' + String(result.Msg) + '. <br>&nbsp;');
-                    $("#modalMessage").modal({ backdrop: "static", keyboard: false });
-                    $("#modalMessage").modal("show");
-                });
-        }
-        else
-            return false;
-    }
-    catch (issue) {
-        console.log("issue .onEmployeJS_Save_New_Employe=" + issue);
-    }
-}
-
-function Save_New_Employe() {
-    try {
-        $("#modalMessage p").html('');
-        $("#modalMessage").modal("hide");
-        var idRolSelected = $("#cmbxRol").val()
-
-        if (String($("#txtEmployeName").val()).trim() == '' || String($("#txtEmployeName").val()).trim() == 'undefined') {
-            alert("Please, type employee name");
-            return;
-        }
-
-        if (Number(idRolSelected) <= 0) {
-            alert("Please, select a rol");
-            return;
-        }
-
-        if (confirm("Are you sure to save?")) {
-            var url = $("#hdnUpdEmployeeURL").val();
-
-            if (String($("#txtEmployeNumber").val()).trim() == '' || String($("#txtEmployeNumber").val()).trim().toLowerCase() == 'undefined') {
-                url = $("#hdnCreateEmployeeURL").val();
-            }
-
-            var data = {};
-            data["Number"] = Number($("#txtEmployeNumber").val());
-            data["idRol"] = Number(idRolSelected);            
-            data["Name"] = String($("#txtEmployeName").val()).trim();
-            data["Active"] = Number(1);
-
-            //CREATE EMPLOYEE
-            ajaxFormHelper(url, "POST", data, null, false)
-                .done(function (result) {
-                    $("#modalMessage p").html('<br>' + String(result.Msg) + '. <br>&nbsp;');
-                    $("#modalMessage").modal({ backdrop: "static", keyboard: false });
-                    $("#modalMessage").modal("show");
-                });
-        }
-        else
-            return false;
-    }
-    catch (issue) {
-        $("#modalMessage p").html('<br><p style="color:red">' + String(issue) + '. </p><br>&nbsp;');
-        $("#modalMessage").modal({ backdrop: "static", keyboard: false });
-        $("#modalMessage").modal("show");
-        console.log("issue .onEmployeJS_Save_New_Employe=" + issue);
-    }
-}
-
-function Cleaninfo() {
-    $("#txtEmployeNumber").val('');
-    $("#txtEmployeName").val('');
-    $("#cmbxRol").val(0)
-    document.getElementById('chbxActive').checked = false;
-}

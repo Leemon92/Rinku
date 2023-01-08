@@ -15,7 +15,7 @@
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(true)
             @Html.Hidden("hdnCreateEmployeeURL", @Url.Action("CreateEmploye", "Home"))
-            @Html.Hidden("hdnUpdEmployeeURL", @Url.Action("CreateEmploye", "Home"))
+            @Html.Hidden("hdnUpdEmployeeURL", @Url.Action("UpdEmploye", "Home"))
             @Html.Hidden("hdnGetEmployeeURL", @Url.Action("GetEmploye", "Home"))
 
             <div class="col-9 no-padding no-margin">
@@ -63,7 +63,7 @@
                                 <label>Is Active?</label>
                             </div>
                             <div class="col-sm m-1">
-                                <input type="checkbox" id="chbxActive" name="chbxActive"> 
+                                <input type="checkbox" id="chbxActive" name="chbxActive">
                             </div>
                         </div>
 
@@ -71,13 +71,13 @@
                             <div class="row w-100 d-flex">
                                 <div class="col-sm-6 d-flex">
                                     <br />
-                                    <button type="button" id="btnSave" class="btn btn-md btn-primary" style="width:100%;" onclick="Save_New_Employe();">
+                                    <button type="button" id="btnSave" class="btn btn-md btn-primary" style="width:100%;">
                                         <i class="fa fa-floppy-o"></i>&nbsp;Save
                                     </button>
                                 </div>
                                 <div class="col-sm-6 d-flex">
                                     <br />
-                                    <button type="button" id="btnClean" class="btn btn-md btn-primary" style="width:100%;" onclick="Cleaninfo();">
+                                    <button type="button" id="btnClean" class="btn btn-md btn-primary" style="width:100%;">
                                         <i class="fa fa-floppy-o"></i>&nbsp;New
                                     </button>
                                 </div>
@@ -113,9 +113,9 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <div id="divbtnAccionsFooter" class="row d-flex flex-row-reverse">
-                    <button type="button" id="btnOk" class="btn btn-md btn-primary" style="width:110px;">
-                        <i class="fa fa-check"></i>&nbsp;Ok
+                <div id="divbtnAccionsFooter" class="row d-flex" style="padding-right:20px">
+                    <button type="button" id="btnOk" class="btn btn-md btn-primary" style="width:100%;">
+                        <i class="fa fa-check"></i>Ok
                     </button>
                 </div>
             </div>

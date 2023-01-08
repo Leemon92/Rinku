@@ -17,7 +17,9 @@ namespace Rinku.Database
 
         public string CreateEmploye(Employe model)
         {
-            string result = string.Empty;
+            List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+            Dictionary<string, object> row;
+            DataTable dtResult = new DataTable();
             SqlConnection sqlCon = new SqlConnection(_dbCon);
             SqlCommand sqlCmd = new SqlCommand();
 
@@ -34,18 +36,71 @@ namespace Rinku.Database
                 sqlCmd.Parameters["@idRol"].Value = model.idRol;
                 sqlCmd.Parameters["@name"].Value = model.Name;
                 sqlCon.Open();
-
-                int employeeNo = Convert.ToInt32(sqlCmd.ExecuteScalar());
-
+                dtResult.Load(sqlCmd.ExecuteReader());
                 sqlCon.Close();
-                result = (employeeNo > 0 ? "OK" : string.Empty);
+
+                foreach (DataRow dr in dtResult.Rows)
+                {
+                    row = new Dictionary<string, object>();
+                    foreach (DataColumn col in dtResult.Columns)
+                    {
+                        row.Add(col.ColumnName, dr[col]);
+                    }
+                    rows.Add(row);
+                }
             }
             catch (Exception ex)
             {
                 sqlCon.Close();
-                result = ex.Message.ToString();
+                return "{ \"Exception\":" +  ex.Message.ToString() + "}";
             }
-            return result;
+            return serializer.Serialize(rows); ;
+        }
+
+        public string UpdtEmploye(Employe model)
+        {
+            List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+            Dictionary<string, object> row;
+            DataTable dtResult = new DataTable();
+            SqlConnection sqlCon = new SqlConnection(_dbCon);
+            SqlCommand sqlCmd = new SqlCommand();
+
+            try
+            {
+                if (sqlCmd.Parameters.Count > 0)
+                    sqlCmd.Parameters.Clear();
+
+                sqlCmd.Connection = sqlCon;
+                sqlCmd.CommandType = System.Data.CommandType.StoredProcedure;
+                sqlCmd.CommandText = "sp_UpdEmployee";
+                sqlCmd.Parameters.Add("@P_ID", System.Data.SqlDbType.Int);
+                sqlCmd.Parameters.Add("@P_idRol", System.Data.SqlDbType.Int);
+                sqlCmd.Parameters.Add("@P_Status", System.Data.SqlDbType.Int);
+                sqlCmd.Parameters.Add("@P_Name", System.Data.SqlDbType.VarChar);
+                sqlCmd.Parameters["@P_ID"].Value = model.Number;
+                sqlCmd.Parameters["@P_idRol"].Value = model.idRol;
+                sqlCmd.Parameters["@P_Status"].Value = model.Active;
+                sqlCmd.Parameters["@P_Name"].Value = model.Name;
+                sqlCon.Open();
+                dtResult.Load(sqlCmd.ExecuteReader());
+                sqlCon.Close();
+
+                foreach (DataRow dr in dtResult.Rows)
+                {
+                    row = new Dictionary<string, object>();
+                    foreach (DataColumn col in dtResult.Columns)
+                    {
+                        row.Add(col.ColumnName, dr[col]);
+                    }
+                    rows.Add(row);
+                }
+            }
+            catch (Exception ex)
+            {
+                sqlCon.Close();
+                return "{ \"Exception\":" + ex.Message.ToString() + "}";
+            }
+            return serializer.Serialize(rows);
         }
 
         public string CreateMovement(Movements model)
@@ -88,7 +143,6 @@ namespace Rinku.Database
         {
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
             Dictionary<string, object> row;
-
             DataTable dtResult = new DataTable();
             SqlConnection sqlCon = new SqlConnection(_dbCon);
             SqlCommand sqlCmd = new SqlCommand();
@@ -118,7 +172,7 @@ namespace Rinku.Database
             catch (Exception ex)
             {
                 sqlCon.Close();
-                return string.Empty;
+                return ex.Message.ToString();
             }
             return serializer.Serialize(rows);
         }

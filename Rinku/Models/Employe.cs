@@ -10,16 +10,16 @@ namespace Rinku.Models
     public class Employe
     {
         [Display(Name = "Numero")]
-        public int Number { get; set; }
+        public int? Number { get; set; }
 
         public int idRol { get; set; }
 
         [Display(Name = "Nombre")]
         public string Name { get; set; }
 
-        public DateTime CreationDte { get; set; }
+        public DateTime? CreationDte { get; set; }
         
-        public int Active { get; set; }
+        public int? Active { get; set; }
     }
 
     public class EmployeDBContext : DbContext 
