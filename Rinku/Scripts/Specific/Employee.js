@@ -46,7 +46,7 @@ $(document).ready(function () {
                         }
                         else {
                             $("#modalMessage p").html('<br><p class="text-danger">' + String(result.Msg) + '. </p><br>');
-                        }                        
+                        }
                         $("#modalMessage").modal({ backdrop: "static", keyboard: false });
                         $("#modalMessage").modal("show");
                     });
@@ -86,11 +86,11 @@ var EmployeeActions = (function () {
             });
 
         var columns = [
-            { title: "EmployeeNumber", field: "EmployeeNumber", headerSort: false, editable: true, visible: true, hozAlign: "center" },
-            { title: "EmployeeName", field: "EmployeeName", headerSort: false, editable: true, visible: true, hozAlign: "center" },
-            { title: "Rol", field: "Rol", headerSort: false, editable: true, visible: true, hozAlign: "center" },
-            { title: "CreationDte", field: "CreationDte", headerSort: false, editable: true, visible: true, hozAlign: "center" },
-            { title: "Status", field: "Active", headerSort: false, editable: true, visible: true, hozAlign: "center" },
+            { title: "EmployeeNumber", field: "EmployeeNumber", headerSort: false, editable: true, visible: true, hozAlign: "center", headerHozAlign: "center" },
+            { title: "EmployeeName", field: "EmployeeName", headerSort: false, editable: true, visible: true, hozAlign: "center", headerHozAlign: "center" },
+            { title: "Rol", field: "Rol", headerSort: false, editable: true, visible: true, hozAlign: "center", headerHozAlign: "center" },
+            { title: "CreationDte", field: "CreationDte", headerSort: false, editable: true, visible: true, hozAlign: "center", headerHozAlign: "center" },
+            { title: "Status", field: "Active", headerSort: false, editable: true, visible: true, hozAlign: "center", headerHozAlign: "center" },
             { title: "idActive", field: "Active", headerSort: false, editable: true, visible: false },
             { title: "ID", field: "Active", headerSort: false, editable: true, visible: false },
             { title: "idRol", field: "Active", headerSort: false, editable: true, visible: false },

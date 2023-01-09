@@ -1,6 +1,7 @@
 ﻿var CurrentMonths = [];
 var allow2Reload = false, usrEditing = false;
 var MovementsTable = null;
+var PayrollTable = null;
 
 $(document).ready(function () {
     ajaxHelper($("#hdnGetEmployeeURL").val(), "GET", null, null)
@@ -22,8 +23,8 @@ $(document).ready(function () {
             $("#modalMessage").modal("hide");
             var idMonthSelected = $("#cmbxMonth").val();
             var idEmployeeSelected = $("#cmbxEmployeeNumber").val();
-            
-            if (Number(idEmployeeSelected) <= 0 || (String($("#txtEmployeName").val()).trim() == '' || String($("#txtEmployeName").val()).trim() == 'undefined') ) {
+
+            if (Number(idEmployeeSelected) <= 0 || (String($("#txtEmployeName").val()).trim() == '' || String($("#txtEmployeName").val()).trim() == 'undefined')) {
                 $("#modalMessage p").html('<br><p class="text-primary">Please, select a employee number. </p><br>');
                 $("#modalMessage").modal({ backdrop: "static", keyboard: false });
                 $("#modalMessage").modal("show");
@@ -55,7 +56,7 @@ $(document).ready(function () {
                         }
                     }
                 }
-            }            
+            }
 
             if (confirm("Are you sure to save?")) {
                 var url = $("#hdnSaveMovementURL").val();
@@ -90,15 +91,23 @@ $(document).ready(function () {
         }
     });
 
+    $("#btnPayroll").click(function () {
+        MovementsActions.InitPayroll(null);
+    });
+
     $("#btnOk").click(function () {
         $("#modalMessage p").html('');
         $("#modalMessage").modal("hide");
         if (allow2Reload === true) { document.location.reload(); }
     });
+
+    $("#btnClose").click(function () {
+        $("#modalPayroll").modal("hide");
+    });
 });
 
 var MovementsActions = (function () {
-    SetTable = function (tableData) {        
+    SetTable = function (tableData) {
         var datajson;
         var data = {};
         data["IDEmploye"] = Number($("#cmbxEmployeeNumber").val());
@@ -111,12 +120,12 @@ var MovementsActions = (function () {
                 datajson = JSON.parse(result);
                 CurrentMonths = [...datajson];
             });
-        
+
         var columns = [
-            { title: "EmployeeNumber", field: "EmployeeNumber", headerSort: false, editable: true, visible: true },
-            { title: "EmployeeName", field: "EmployeeName", headerSort: false, editable: true, visible: true },
-            { title: "Month", field: "Month", headerSort: false, editable: true, visible: true },
-            { title: "Monthly Deliveries", field: "QtyShip", headerSort: false, editable: true, visible: true },
+            { title: "EmployeeNumber", field: "EmployeeNumber", headerSort: false, editable: true, visible: true, hozAlign: "center", headerHozAlign: "center" },
+            { title: "EmployeeName", field: "EmployeeName", headerSort: false, editable: true, visible: true, hozAlign: "center", headerHozAlign: "center" },
+            { title: "Month", field: "Month", headerSort: false, editable: true, visible: true, hozAlign: "center", headerHozAlign: "center" },
+            { title: "Monthly Deliveries", field: "QtyShip", headerSort: false, editable: true, visible: true, hozAlign: "center", headerHozAlign: "center" },
         ];
 
         MovementsTable = new Tabulator("#tblMovements", {
@@ -138,8 +147,110 @@ var MovementsActions = (function () {
         });
     };
 
+    SetTablePayroll = function (tableData) {
+        var idMonthSelected = $("#cmbxMonth").val();
+        var idEmployeeSelected = $("#cmbxEmployeeNumber").val();
+
+        if (Number(idEmployeeSelected) <= 0 || (String($("#txtEmployeName").val()).trim() == '' || String($("#txtEmployeName").val()).trim() == 'undefined')) {
+            $("#modalMessage p").html('<br><p class="text-primary">Please, select a employee number. </p><br>');
+            $("#modalMessage").modal({ backdrop: "static", keyboard: false });
+            $("#modalMessage").modal("show");
+            return;
+        }
+
+        if (Number(idMonthSelected) <= 0) {
+            $("#modalMessage p").html('<br><p class="text-primary">Please, select a month. </p><br>');
+            $("#modalMessage").modal({ backdrop: "static", keyboard: false });
+            $("#modalMessage").modal("show");
+            return;
+        }
+
+        var data = {};
+        data["IDEmploye"] = Number(idEmployeeSelected);
+        data["IDMonth"] = Number(idMonthSelected);
+
+        var datajson;
+        ajaxHelper($("#hdnGetPayrollURL").val(), "GET", data, null, true)
+            .done(function (result) {
+                datajson = JSON.parse(result);
+                $("#modalPayroll").modal({ backdrop: "static", keyboard: false });
+                $("#modalPayroll").modal("show");                
+            });
+
+        var columns = [
+            { title: "Number", field: "EmployeeNumber", headerSort: false, editable: true, visible: true, hozAlign: "center", headerHozAlign: "center" },
+            { title: "Employee", field: "EmployeeName", headerSort: false, editable: true, visible: true, hozAlign: "center", headerHozAlign: "center" },
+            { title: "Rol", field: "Rol", headerSort: false, editable: true, visible: true, hozAlign: "center", headerHozAlign: "center" },
+            { title: "Hours", field: "HoursWorked", headerSort: false, editable: true, visible: true, hozAlign: "center", headerHozAlign: "center" },
+            {
+                title: "$ Salary", field: "Salary", headerSort: false, visible: true, formatter: "money", formatterParams: {
+                    decimal: ".",
+                    thousand: ",",
+                    symbol: "$",
+                }, hozAlign: "center", headerHozAlign: "center"
+            },
+            { title: "$ Deliveries", field: "PaymentDeliveries", headerSort: false, visible: true, formatter: "money", formatterParams: {
+                    decimal: ".",
+                    thousand: ",",
+                    symbol: "$",
+            }, hozAlign: "center", headerHozAlign: "center"
+            },
+            {
+                title: "$ Bonus", field: "BonusPayment", headerSort: false,  visible: true, formatter: "money", formatterParams: {
+                    decimal: ".",
+                    thousand: ",",
+                    symbol: "$",
+                }, hozAlign: "center", headerHozAlign: "center"
+            },
+            {
+                title: "$ Vouchers", field: "FoodVouchers", headerSort: false,  visible: true, formatter: "money", formatterParams: {
+                    decimal: ".",
+                    thousand: ",",
+                    symbol: "$",
+                }, hozAlign: "center", headerHozAlign: "center"
+            },
+            {
+                title: "$ Total", field: "Total", headerSort: false,  visible: true, formatter: "money", formatterParams: {
+                    decimal: ".",
+                    thousand: ",",
+                    symbol: "$",
+                }, hozAlign: "center", headerHozAlign: "center"
+            },
+            {
+                title: "Tax", field: "Tax", headerSort: false, visible: true, formatter: "money", formatterParams: {
+                    decimal: ".",
+                    thousand: ",",
+                    symbol: "$",
+                }, hozAlign: "center", headerHozAlign: "center"
+            },
+            {
+                title: "Extra Tax", field: "ExtraTax", headerSort: false, editable: true, visible: true, formatter: "money", formatterParams: {
+                    decimal: ".",
+                    thousand: ",",
+                    symbol: "$",
+                }, hozAlign: "center", headerHozAlign: "center"
+            },
+            {
+                title: "$ To Pay", field: "AmountToPay", headerSort: false, editable: true, visible: true, formatter: "money", formatterParams: {
+                    decimal: ".",
+                    thousand: ",",
+                    symbol: "$",
+                }, hozAlign: "center", headerHozAlign: "center"
+            },
+        ];
+
+        PayrollTable = new Tabulator("#tblPayroll", {
+            data: datajson,
+            layout: "fitColumns",
+            pagination: false,
+            selectable: false,
+            placeholder: "No Data Not Found",
+            columns: columns,
+        });
+    };
     return {
         InitTable: SetTable,
+        InitPayroll: SetTablePayroll,
     };
 }());
 

@@ -266,5 +266,47 @@ namespace Rinku.Database
             }
             return serializer.Serialize(rows);
         }
+
+        public string GetPayroll(Movements model)
+        {
+            List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+            Dictionary<string, object> row;
+            DataTable dtResult = new DataTable();
+            SqlConnection sqlCon = new SqlConnection(_dbCon);
+            SqlCommand sqlCmd = new SqlCommand();
+
+            try
+            {
+                if (sqlCmd.Parameters.Count > 0)
+                    sqlCmd.Parameters.Clear();
+
+                sqlCmd.Connection = sqlCon;
+                sqlCmd.CommandType = System.Data.CommandType.StoredProcedure;
+                sqlCmd.CommandText = "sp_GetPayrollByID";
+                sqlCmd.Parameters.Add("@IDEmplye", System.Data.SqlDbType.Int);
+                sqlCmd.Parameters.Add("@IDMonth", System.Data.SqlDbType.Int);
+                sqlCmd.Parameters["@IDEmplye"].Value = model.IDEmploye;
+                sqlCmd.Parameters["@IDMonth"].Value = model.IDMonth;
+                sqlCon.Open();
+                dtResult.Load(sqlCmd.ExecuteReader());
+                sqlCon.Close();
+
+                foreach (DataRow dr in dtResult.Rows)
+                {
+                    row = new Dictionary<string, object>();
+                    foreach (DataColumn col in dtResult.Columns)
+                    {
+                        row.Add(col.ColumnName, dr[col]);
+                    }
+                    rows.Add(row);
+                }
+            }
+            catch (Exception ex)
+            {
+                sqlCon.Close();
+                return string.Empty;
+            }
+            return serializer.Serialize(rows);
+        }
     }
 }

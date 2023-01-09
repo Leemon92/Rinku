@@ -216,6 +216,14 @@ namespace Rinku.Controllers
         {
             return Json(_dbCon.GetMovmentsID(Convert.ToInt32(model.IDEmploye)), JsonRequestBehavior.AllowGet);
         }
+
+        //GET: Home/GetPayroll
+        [HttpGet]
+        [ActionName("GetPayroll")]
+        public JsonResult GetPayroll(Movements model)
+        {
+            return Json(_dbCon.GetPayroll(model), JsonRequestBehavior.AllowGet);
+        }
         #endregion
     }
 }

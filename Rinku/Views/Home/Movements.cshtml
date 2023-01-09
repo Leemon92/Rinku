@@ -18,6 +18,7 @@
             @Html.Hidden("hdnGetEmployeeURL", @Url.Action("GetEmploye", "Home"))
             @Html.Hidden("hdnGetEmployeeIDURL", @Url.Action("GetEmployeID", "Home"))
             @Html.Hidden("hdnGetMovementURL", @Url.Action("GetMovements", "Home"))
+            @Html.Hidden("hdnGetPayrollURL", @Url.Action("GetPayroll", "Home"))
 
             <div class="col-9 no-padding no-margin">
                 <h4 class="text-primary font-weight-bold justify-content-around" style="vertical-align:central; align-items:center; text-align:justify">Movements</h4>
@@ -139,6 +140,33 @@
                 <div id="divbtnAccionsFooter" class="row d-flex" style="padding-right:20px">
                     <button type="button" id="btnOk" class="btn btn-md btn-primary" style="width:100%;">
                         <i class="fa fa-check"></i>Ok
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Payroll -->
+<div id="modalPayroll" class="modal fade" role="dialog" aria-labelledby="modalMessageLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary" id="modalMessageLabel">
+                    <span class="fas fa-bell"></span>Payroll Detail
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div id="divPayroll" class="row">
+                    <div class="tab-content top-space w-100 h-100 ">
+                        <div id="tblPayroll" class="top-sm-space tabulator-small"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="divbtnAccionsFooter" class="row d-flex" style="padding-right:20px">
+                    <button type="button" id="btnClose" class="btn btn-md btn-primary" style="width:100%;">
+                        <i class="fa fa-check"></i>Close
                     </button>
                 </div>
             </div>
